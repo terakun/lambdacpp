@@ -10,8 +10,9 @@ int main(){
   application g(&f,&f);
   
   std::string str;
+  parser p;
   while(std::cin >> str){
-
+    p(str);
   }
   return 0;
 }
