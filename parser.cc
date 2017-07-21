@@ -15,7 +15,10 @@ expression* parser::get_expression(){
     if(c == '\\'){
       return get_abst();
     }else if(isalpha(c)){
+      get_var();
+      if(exp_str[cur]==' '){
 
+      }
     }else if(c == '('){
       return get_expression();
     }

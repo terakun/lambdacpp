@@ -4,36 +4,35 @@
 #include <iostream>
 
 class expression{
-  protected:
+  public:
   enum type_e{
     VAR,
     ABST,
     APP
   }type;
-  public:
   
   expression(type_e t):type(t){}
-  virtual std::string to_string()const  = 0;
+  virtual std::string to_string()const = 0;
   friend expression* simplify(expression*);
   friend expression* substitute(expression*,const std::string&,expression*);
 };
 
 class variable : public expression{
   public:
-  std::string var;
-  variable(const std::string &var):expression(VAR),var(var){}
+  std::string symbol;
+  variable(const std::string &symbol):expression(VAR),symbol(symbol){}
   std::string to_string()const{
-    return var;
+    return symbol;
   }
 };
 
 class abstraction : public expression{
   public:
-  std::string var;
+  std::string symbol;
   expression *M;
-  abstraction(const std::string &var,expression *M):expression(ABST),var(var),M(M){}
+  abstraction(const std::string &symbol,expression *M):expression(ABST),symbol(symbol),M(M){}
   std::string to_string()const{
-    return "\\" + var + ".(" + M->to_string() + ")";
+    return "\\" + symbol + ".(" + M->to_string() + ")";
   }
 };
 
@@ -46,4 +45,5 @@ class application : public expression{
   }
 };
 
+bool free_occurance(expression *,const std::string &);
 #endif
