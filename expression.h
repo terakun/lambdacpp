@@ -33,7 +33,7 @@ class abstraction : public expression{
   expression *M;
   abstraction(const std::string &var,expression *M):expression(ABST),var(var),M(M){}
   std::string to_string()const{
-    return "\\" + var + "." + M->to_string();
+    return "\\" + var + ".(" + M->to_string() + ")";
   }
 };
 

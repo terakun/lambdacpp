@@ -1,5 +1,9 @@
 #include "./expression.h"
 
+std::string gensymbol(){
+  static int count = 0;
+  return "g" + std::to_string(count++);
+}
 expression* simplify(expression* exp){
   switch(exp->type){
     case expression::VAR:
@@ -27,6 +31,7 @@ expression* simplify(expression* exp){
   }
 }
 
+
 expression* substitute(expression* exp,const std::string &varname,expression* exp2){
   switch(exp->type){
     case expression::VAR:
@@ -42,7 +47,8 @@ expression* substitute(expression* exp,const std::string &varname,expression* ex
     case expression::ABST:
       {
         auto abst = dynamic_cast<abstraction*>(exp);
-        return new abstraction(abst->var,substitute(abst->M,varname,exp2));
+        auto new_varname = gensymbol();
+        return new abstraction(new_varname,substitute(substitute(abst->M,abst->var,new variable(new_varname)),varname,exp2));
       }
       break;
     case expression::APP:
