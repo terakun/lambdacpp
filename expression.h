@@ -32,7 +32,7 @@ class abstraction : public expression{
   expression *M;
   abstraction(const std::string &symbol,expression *M):expression(ABST),symbol(symbol),M(M){}
   std::string to_string()const{
-    return "\\" + symbol + ".(" + M->to_string() + ")";
+    return "\\" + symbol + "." + M->to_string() ;
   }
 };
 
@@ -41,9 +41,19 @@ class application : public expression{
   expression *M1,*M2;
   application(expression *M1,expression *M2):expression(APP),M1(M1),M2(M2){}
   std::string to_string()const{
-    return M1->to_string() + " " + M2->to_string();
+    std::string M1_str = M1->to_string();
+    if(M1->type!=VAR){
+      M1_str = "(" + M1_str + ")";
+    }
+    std::string M2_str = M2->to_string();
+    if(M2->type!=VAR){
+      M2_str = "(" + M2_str + ")";
+    }
+
+    return M1_str + " " + M2_str;
   }
 };
 
 bool free_occurance(expression *,const std::string &);
+
 #endif

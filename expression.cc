@@ -49,8 +49,16 @@ expression* substitute(expression* exp,const std::string &symbol,expression* exp
     case expression::ABST:
       {
         auto abst = dynamic_cast<abstraction*>(exp);
-        auto new_symbol = gensymbol();
-        return new abstraction(new_symbol,substitute(substitute(abst->M,abst->symbol,new variable(new_symbol)),symbol,exp2));
+        if(symbol == abst->symbol){ 
+          return abst;
+        }else{
+          if(!free_occurance(exp2,abst->symbol)){
+            return new abstraction(abst->symbol,substitute(abst->M,symbol,exp2));
+          }else{
+            auto new_symbol = gensymbol();
+            return new abstraction(new_symbol,substitute(substitute(abst->M,abst->symbol,new variable(new_symbol)),symbol,exp2));
+          }
+        }
       }
       break;
     case expression::APP:
@@ -72,6 +80,7 @@ bool free_occurance(expression *exp,const std::string &symbol){
       {
         auto var = dynamic_cast<variable*>(exp);
         if(var -> symbol == symbol) return true;
+        else false;
         break;
       }
     case expression::ABST:

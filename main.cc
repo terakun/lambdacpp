@@ -4,14 +4,32 @@
 
 
 int main(){
-  variable x("x");
-  std::cout << x.to_string() << std::endl;
-  std::cout << free_occurance(&x,"x") << std::endl;
-  abstraction e1("x",&x);
-  std::cout << e1.to_string() << std::endl;
-  std::cout << free_occurance(&e1,"x") << std::endl;
-  application e2(&x,&e1);
-  std::cout << e2.to_string() << std::endl;
-  std::cout << free_occurance(&e2,"x") << std::endl;
+  variable s("s");
+  variable z("z");
+  application e0(&s,&z);
+  abstraction e1("z",&e0);
+  abstraction one("s",&e1);
+
+  variable n("n");
+  application e2(&n,&s);
+  application e3(&e2,&z);
+  application e4(&s,&e3);
+  abstraction e5("z",&e4);
+  abstraction e6("s",&e5);
+  abstraction succ("n",&e6);
+  application succzero(&succ,&one);
+  expression *exp = &succzero;
+  std::cout << exp->to_string() << std::endl;
+  char c;
+  while(std::cin>>c&&c=='s'){
+    exp = simplify(exp);
+    std::cout << exp->to_string() << std::endl;
+  }
+    
+  std::string str;
+  parser p;
+  while(std::cin >> str){
+    p(str);
+  }
   return 0;
 }
