@@ -1,6 +1,14 @@
 #include <cassert>
 #include "./parser.h"
 
+/*
+
+EXPRESSION = FACTOR FACTOR
+| \SYMBOL->EXPRESSION
+| SYMBOL
+
+FACTOR = '(' EXPRESSION ')' | SYMBOL
+ */
 expression* parser::operator()(const std::string &str){
   cur = 0;
   exp_str = str;
@@ -8,31 +16,35 @@ expression* parser::operator()(const std::string &str){
   return exp;
 }
 
+expression* parser::read_factor(){
+  if(exp_str[cur] != '(') return read_var();
+  cur++;
+  auto tmp = read_expression();
+  assert(exp_str[cur] == ')');
+  cur++;
+  return tmp;
+}
+
 expression* parser::read_expression(){
   expression *tmp = nullptr;
 
   while(cur < exp_str.length()&&exp_str[cur]!=')'){
     char c = exp_str[cur];
-    std::cout << c << " " << cur << std::endl;
-
     if(c == '\\'){
       cur++;
       tmp = read_abst();
+      std::cout << "abst :" <<  tmp->to_string() << std::endl;
     }else if(isalpha(c)){
       tmp = read_var();
-    }else if(c == '('){
-      cur++;
-      tmp = read_expression();
+      std::cout << "var :" << tmp->to_string() << std::endl;
     }else if(c == ' '){
       cur++;
-    }
-
-    if(cur < exp_str.length()&&exp_str[cur]!=')'&&tmp!=nullptr){
-      std::cout << "tmp:" << tmp->to_string() << " tmp type:" << tmp->type << " " << exp_str[cur] << std::endl;
-      return new application(tmp,read_expression());
-    }
+    }else{
+      tmp = read_factor();
+      tmp = new application(tmp,read_factor());
+      std::cout << "app :" << tmp->to_string() << std::endl;
+    }  
   }
-  cur++;
   return tmp;
 }
 
@@ -41,7 +53,6 @@ expression* parser::read_var(){
   while(cur<exp_str.size()&&isalpha(exp_str[cur])){
     symbol += exp_str[cur++];
   }
-  std::cout << "read_var:" << cur << std::endl;
   return new variable(symbol);
 }
 

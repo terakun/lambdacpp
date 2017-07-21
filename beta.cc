@@ -6,6 +6,7 @@ expression* beta_reduction::operator()(expression *exp){
   do{
     stop = true;
     tmp = step(tmp);
+    std::cout << ">>" << tmp->to_string() << std::endl;
   }while(!stop);
   return tmp;
 }
