@@ -9,38 +9,45 @@ expression* parser::operator()(const std::string &str){
 }
 
 expression* parser::read_expression(){
+  expression *tmp;
   while(cur < exp_str.length()){
     char c = exp_str[cur];
-    cur++ ;
+    // std::cout << c << std::endl;
     if(c == '\\'){
+      cur++;
       return read_abst();
     }else if(isalpha(c)){
-      read_var();
-      if(exp_str[cur]==' '){
-
-      }
+      tmp = read_var();
     }else if(c == '('){
-      return read_expression();
+      cur++;
+      tmp = read_expression();
+      assert(exp_str[cur]==')');
+      cur++;
     }else if(c == ' '){
-      
+      cur++;
+      return new application(tmp,read_expression());
+    }else if(c == ')'){
+      return tmp;
     }
   }
+  return tmp;
 }
 
 expression* parser::read_var(){
   std::string symbol;
-  while(isalpha(exp_str[cur])){
+  while(cur<exp_str.size()&&isalpha(exp_str[cur])){
     symbol += exp_str[cur++];
   }
   return new variable(symbol);
 }
 
 expression* parser::read_abst(){
-  std::string symbol ;
-  while(isalpha(exp_str[cur])){
+  std::string symbol;
+  while(cur<exp_str.size()&&isalpha(exp_str[cur])){
     symbol += exp_str[cur++];
   }
   assert(exp_str[cur]=='.');
+  cur++;
   return new abstraction(symbol,read_expression());
 }
 

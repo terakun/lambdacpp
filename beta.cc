@@ -112,6 +112,6 @@ bool beta_reduction::free_occurance(expression *exp,const std::string &symbol){
 
 std::string beta_reduction::gensymbol(){
   static int count = 0;
-  return "g" + std::to_string(count++);
+  return "d" + std::to_string(count++);
 }
 
