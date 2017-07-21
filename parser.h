@@ -10,7 +10,6 @@ class parser{
   expression* read_expression();
   expression* read_var();
   expression* read_abst();
-  expression* read_app();
 
   public:
   parser(){}

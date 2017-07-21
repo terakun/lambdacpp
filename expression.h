@@ -30,7 +30,7 @@ class abstraction : public expression{
   expression *M;
   abstraction(const std::string &symbol,expression *M):expression(ABST),symbol(symbol),M(M){}
   std::string to_string()const{
-    return "\\" + symbol + "." + M->to_string() ;
+    return "\\" + symbol + "->" + M->to_string() ;
   }
 };
 
