@@ -5,7 +5,7 @@ INCLUDE =
 LIBS = 
 
 TARGET = main
-SRCS = main.cc parser.cc expression.cc
+SRCS = main.cc parser.cc beta.cc
 
 OBJS = $(patsubst %.cc,%.o,$(SRCS))
 

@@ -6,13 +6,16 @@ class parser{
   expression *exp;
   int cur;
   std::string exp_str;
+
+  expression* read_expression();
+  expression* read_var();
+  expression* read_abst();
+  expression* read_app();
+
   public:
   parser(){}
-  void operator()(const std::string &); 
-  expression* get_expression();
-  expression* get_var();
-  expression* get_abst();
-  expression* get_app();
+  expression* operator()(const std::string &); 
+  expression* get_exp(){ return exp; }
 };
 
 

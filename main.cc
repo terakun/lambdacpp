@@ -1,7 +1,7 @@
 #include <iostream>
 #include "./parser.h"
 #include "./expression.h"
-
+#include "./beta.h"
 
 int main(){
   variable s("s");
@@ -21,15 +21,14 @@ int main(){
   expression *exp = &succzero;
   std::cout << exp->to_string() << std::endl;
   char c;
-  while(std::cin>>c&&c=='s'){
-    exp = simplify(exp);
-    std::cout << exp->to_string() << std::endl;
-  }
+  beta_reduction beta;
+  exp = beta(exp);
+  std::cout << exp->to_string() << std::endl;
     
   std::string str;
   parser p;
   while(std::cin >> str){
-    p(str);
+    std::cout << beta(p(str))->to_string() << std::endl;
   }
   return 0;
 }

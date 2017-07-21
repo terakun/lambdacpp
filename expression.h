@@ -13,8 +13,6 @@ class expression{
   
   expression(type_e t):type(t){}
   virtual std::string to_string()const = 0;
-  friend expression* simplify(expression*);
-  friend expression* substitute(expression*,const std::string&,expression*);
 };
 
 class variable : public expression{
@@ -54,6 +52,5 @@ class application : public expression{
   }
 };
 
-bool free_occurance(expression *,const std::string &);
 
 #endif

@@ -1,51 +1,53 @@
 #include <cassert>
 #include "./parser.h"
 
-
-void parser::operator()(const std::string &str){
+expression* parser::operator()(const std::string &str){
   cur = 0;
   exp_str = str;
-  exp = get_expression();
+  exp = read_expression();
+  return exp;
 }
 
-expression* parser::get_expression(){
+expression* parser::read_expression(){
   while(cur < exp_str.length()){
     char c = exp_str[cur];
     cur++ ;
     if(c == '\\'){
-      return get_abst();
+      return read_abst();
     }else if(isalpha(c)){
-      get_var();
+      read_var();
       if(exp_str[cur]==' '){
 
       }
     }else if(c == '('){
-      return get_expression();
+      return read_expression();
+    }else if(c == ' '){
+      
     }
   }
 }
 
-expression* parser::get_var(){
-  std::string varname;
+expression* parser::read_var(){
+  std::string symbol;
   while(isalpha(exp_str[cur])){
-    varname += exp_str[cur++];
+    symbol += exp_str[cur++];
   }
-  return new variable(varname);
+  return new variable(symbol);
 }
 
-expression* parser::get_abst(){
-  std::string varname ;
+expression* parser::read_abst(){
+  std::string symbol ;
   while(isalpha(exp_str[cur])){
-    varname += exp_str[cur++];
+    symbol += exp_str[cur++];
   }
   assert(exp_str[cur]=='.');
-  return new abstraction(varname,get_expression());
+  return new abstraction(symbol,read_expression());
 }
 
-expression* parser::get_app(){
-  auto M1 = get_expression();
+expression* parser::read_app(){
+  auto M1 = read_expression();
   assert(exp_str[cur]==' ');
-  auto M2 = get_expression();
+  auto M2 = read_expression();
   return new application(M1,M2);
 }
 

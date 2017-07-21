@@ -1,11 +1,16 @@
-#include "./expression.h"
+#include "./beta.h"
 
-std::string gensymbol(){
-  static int count = 0;
-  return "g" + std::to_string(count++);
+
+expression* beta_reduction::operator()(expression *exp){
+  auto tmp = exp;
+  do{
+    stop = true;
+    tmp = step(tmp);
+  }while(!stop);
+  return tmp;
 }
 
-expression* simplify(expression* exp){
+expression* beta_reduction::step(expression *exp){
   switch(exp->type){
     case expression::VAR:
       return exp;
@@ -13,7 +18,7 @@ expression* simplify(expression* exp){
     case expression::ABST:
       {
         auto abst = dynamic_cast<abstraction*>(exp);
-        return new abstraction(abst->symbol,simplify(abst->M));
+        return new abstraction(abst->symbol,step(abst->M));
         break;
       }
     case expression::APP:
@@ -23,7 +28,7 @@ expression* simplify(expression* exp){
           auto abst = dynamic_cast<abstraction*>(app->M1);
           return substitute(abst->M,abst->symbol,app->M2);
         }else{
-          return new application(simplify(app->M1),simplify(app->M2));
+          return new application(step(app->M1),step(app->M2));
         }
         break;
       }
@@ -34,12 +39,13 @@ expression* simplify(expression* exp){
   }
 }
 
-expression* substitute(expression* exp,const std::string &symbol,expression* exp2){
+expression* beta_reduction::substitute(expression* exp,const std::string &symbol,expression* exp2){
   switch(exp->type){
     case expression::VAR:
       {
         auto var = dynamic_cast<variable*>(exp);
         if(var -> symbol == symbol){
+          stop = false;
           return exp2;
         }else{
           return var;
@@ -72,9 +78,10 @@ expression* substitute(expression* exp,const std::string &symbol,expression* exp
       std::abort();
       break;
   }
+
 }
 
-bool free_occurance(expression *exp,const std::string &symbol){
+bool beta_reduction::free_occurance(expression *exp,const std::string &symbol){
   switch(exp->type){
     case expression::VAR:
       {
@@ -100,5 +107,11 @@ bool free_occurance(expression *exp,const std::string &symbol){
       std::abort();
       break;
   }
+
+}
+
+std::string beta_reduction::gensymbol(){
+  static int count = 0;
+  return "g" + std::to_string(count++);
 }
 
