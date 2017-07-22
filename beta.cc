@@ -20,7 +20,7 @@ exp_ptr beta_reduction::step(exp_ptr exp){
     case expression::ABST:
       {
         auto abst = std::dynamic_pointer_cast<abstraction>(exp);
-        return exp_ptr(new abstraction(abst->symbol,step(abst->M)));
+        return std::make_shared<abstraction>(abst->symbol,step(abst->M));
         break;
       }
     case expression::APP:
@@ -30,7 +30,7 @@ exp_ptr beta_reduction::step(exp_ptr exp){
           auto abst = std::dynamic_pointer_cast<abstraction>(app->M1);
           return substitute(abst->M,abst->symbol,app->M2);
         }else{
-          return exp_ptr(new application(step(app->M1),step(app->M2)));
+          return std::make_shared<application>(step(app->M1),step(app->M2));
         }
         break;
       }
@@ -61,10 +61,10 @@ exp_ptr beta_reduction::substitute(exp_ptr exp,const std::string &symbol,exp_ptr
           return abst;
         }else{
           if(!free_occurance(exp2,abst->symbol)){
-            return exp_ptr(new abstraction(abst->symbol,substitute(abst->M,symbol,exp2)));
+            return std::make_shared<abstraction>(abst->symbol,substitute(abst->M,symbol,exp2));
           }else{
             auto new_symbol = gensymbol();
-            return exp_ptr(new abstraction(new_symbol,substitute(substitute(abst->M,abst->symbol,exp_ptr(new variable(new_symbol))),symbol,exp2)));
+            return std::make_shared<abstraction>(new_symbol,substitute(substitute(abst->M,abst->symbol,std::make_shared<variable>(new_symbol)),symbol,exp2));
           }
         }
       }
@@ -72,7 +72,7 @@ exp_ptr beta_reduction::substitute(exp_ptr exp,const std::string &symbol,exp_ptr
     case expression::APP:
       {
         auto app = std::dynamic_pointer_cast<application>(exp);
-        return exp_ptr(new application(substitute(app->M1,symbol,exp2),substitute(app->M2,symbol,exp2)));
+        return std::make_shared<application>(substitute(app->M1,symbol,exp2),substitute(app->M2,symbol,exp2));
         break;
       }
     default:

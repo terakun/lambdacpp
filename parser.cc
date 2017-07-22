@@ -13,26 +13,37 @@ exp_ptr parser::read_expression(){
   exp_ptr tmp;
   while(cur < exp_str.length()&&exp_str[cur]!=')'){
     char c = exp_str[cur];
-    if(c == '\\'){
-      cur++;
-      tmp = read_abst();
-    }else if(isalpha(c)){
-      tmp = read_var();
-    }else if(c == ' '){
-      cur++;
-    }else if(c == '('){
-      cur++;
-      tmp = read_expression();
-      assert(exp_str[cur] == ')');
-      cur++;
-    }  
+    switch(c){
+      case '\\':
+        cur++;
+        tmp = read_abst();
+        break;
+      case ' ':
+        cur++;
+        break;
+      case '(':
+        cur++;
+        tmp = read_expression();
+        assert(exp_str[cur] == ')');
+        cur++;
+        break;
+      default:
+        if(isalpha(c)){
+          tmp = read_var();
+        }else{
+          std::cerr << "something wrong!" << std::endl;
+          std::abort();
+        }
+        break;
+    }
+
     if(tmp!=nullptr){
       if(e!=nullptr){
         e.reset(new application(e,tmp));
       }else{
         e = tmp;
       }
-      tmp = nullptr;
+      tmp.reset();
     }
   }
   return e;
@@ -43,7 +54,7 @@ exp_ptr parser::read_var(){
   while(cur<exp_str.size()&&isalpha(exp_str[cur])){
     symbol += exp_str[cur++];
   }
-  return exp_ptr(new variable(symbol));
+  return std::make_shared<variable>(symbol);
 }
 
 exp_ptr parser::read_abst(){
@@ -55,5 +66,5 @@ exp_ptr parser::read_abst(){
   cur++;
   assert(exp_str[cur]=='>');
   cur++;
-  return exp_ptr(new abstraction(symbol,read_expression()));
+  return std::make_shared<abstraction>(symbol,read_expression());
 }
