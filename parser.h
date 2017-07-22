@@ -3,19 +3,19 @@
 #include "./expression.h"
 
 class parser{
-  expression *exp;
+  exp_ptr exp;
   int cur;
   std::string exp_str;
 
-  expression* read_factor();
-  expression* read_expression();
-  expression* read_var();
-  expression* read_abst();
+  exp_ptr read_factor();
+  exp_ptr read_expression();
+  exp_ptr read_var();
+  exp_ptr read_abst();
 
   public:
   parser(){}
-  expression* operator()(const std::string &); 
-  expression* get_exp(){ return exp; }
+  exp_ptr operator()(const std::string &); 
+  exp_ptr get_exp(){ return exp; }
 };
 
 

@@ -9,14 +9,14 @@ EXPRESSION = FACTOR FACTOR
 
 FACTOR = '(' EXPRESSION ')' | SYMBOL
  */
-expression* parser::operator()(const std::string &str){
+exp_ptr parser::operator()(const std::string &str){
   cur = 0;
   exp_str = str;
   exp = read_expression();
   return exp;
 }
 
-expression* parser::read_factor(){
+exp_ptr parser::read_factor(){
   if(exp_str[cur] != '(') return read_var();
   cur++;
   auto tmp = read_expression();
@@ -25,9 +25,9 @@ expression* parser::read_factor(){
   return tmp;
 }
 
-expression* parser::read_expression(){
-  expression *e = nullptr;
-  expression *tmp = nullptr;
+exp_ptr parser::read_expression(){
+  exp_ptr e;
+  exp_ptr tmp;
   while(cur < exp_str.length()&&exp_str[cur]!=')'){
     char c = exp_str[cur];
     if(c == '\\'){
@@ -42,7 +42,7 @@ expression* parser::read_expression(){
     }  
     if(tmp!=nullptr){
       if(e!=nullptr){
-        e = new application(e,tmp);
+        e.reset(new application(e,tmp));
       }else{
         e = tmp;
       }
@@ -52,15 +52,15 @@ expression* parser::read_expression(){
   return e;
 }
 
-expression* parser::read_var(){
+exp_ptr parser::read_var(){
   std::string symbol;
   while(cur<exp_str.size()&&isalpha(exp_str[cur])){
     symbol += exp_str[cur++];
   }
-  return new variable(symbol);
+  return exp_ptr(new variable(symbol));
 }
 
-expression* parser::read_abst(){
+exp_ptr parser::read_abst(){
   std::string symbol;
   while(cur<exp_str.size()&&isalpha(exp_str[cur])){
     symbol += exp_str[cur++];
@@ -69,5 +69,5 @@ expression* parser::read_abst(){
   cur++;
   assert(exp_str[cur]=='>');
   cur++;
-  return new abstraction(symbol,read_expression());
+  return exp_ptr(new abstraction(symbol,read_expression()));
 }

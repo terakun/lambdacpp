@@ -6,10 +6,10 @@ class beta_reduction{
   bool stop;
   public:
   beta_reduction(){}
-  expression* operator()(expression *);
-  expression* step(expression*);
-  expression* substitute(expression*,const std::string &,expression*);
-  bool free_occurance(expression *,const std::string &);
+  exp_ptr operator()(exp_ptr);
+  exp_ptr step(exp_ptr);
+  exp_ptr substitute(exp_ptr,const std::string &,exp_ptr);
+  bool free_occurance(exp_ptr,const std::string &);
   std::string gensymbol();
 };
 
