@@ -1,28 +1,11 @@
 #include <cassert>
 #include "./parser.h"
 
-/*
-
-EXPRESSION = FACTOR FACTOR
-| \SYMBOL->EXPRESSION
-| SYMBOL
-
-FACTOR = '(' EXPRESSION ')' | SYMBOL
- */
 exp_ptr parser::operator()(const std::string &str){
   cur = 0;
   exp_str = str;
   exp = read_expression();
   return exp;
-}
-
-exp_ptr parser::read_factor(){
-  if(exp_str[cur] != '(') return read_var();
-  cur++;
-  auto tmp = read_expression();
-  assert(exp_str[cur] == ')');
-  cur++;
-  return tmp;
 }
 
 exp_ptr parser::read_expression(){
@@ -38,7 +21,10 @@ exp_ptr parser::read_expression(){
     }else if(c == ' '){
       cur++;
     }else if(c == '('){
-      tmp = read_factor();
+      cur++;
+      tmp = read_expression();
+      assert(exp_str[cur] == ')');
+      cur++;
     }  
     if(tmp!=nullptr){
       if(e!=nullptr){

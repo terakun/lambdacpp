@@ -1,7 +1,6 @@
 #include <memory>
 #include "./beta.h"
 
-
 exp_ptr beta_reduction::operator()(exp_ptr exp){
   auto tmp = exp;
   int cnt = 0;

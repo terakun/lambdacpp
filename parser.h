@@ -7,7 +7,6 @@ class parser{
   int cur;
   std::string exp_str;
 
-  exp_ptr read_factor();
   exp_ptr read_expression();
   exp_ptr read_var();
   exp_ptr read_abst();
