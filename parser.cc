@@ -26,26 +26,30 @@ expression* parser::read_factor(){
 }
 
 expression* parser::read_expression(){
+  expression *e = nullptr;
   expression *tmp = nullptr;
-
   while(cur < exp_str.length()&&exp_str[cur]!=')'){
     char c = exp_str[cur];
     if(c == '\\'){
       cur++;
       tmp = read_abst();
-      std::cout << "abst :" <<  tmp->to_string() << std::endl;
     }else if(isalpha(c)){
       tmp = read_var();
-      std::cout << "var :" << tmp->to_string() << std::endl;
     }else if(c == ' '){
       cur++;
-    }else{
+    }else if(c == '('){
       tmp = read_factor();
-      tmp = new application(tmp,read_factor());
-      std::cout << "app :" << tmp->to_string() << std::endl;
     }  
+    if(tmp!=nullptr){
+      if(e!=nullptr){
+        e = new application(e,tmp);
+      }else{
+        e = tmp;
+      }
+      tmp = nullptr;
+    }
   }
-  return tmp;
+  return e;
 }
 
 expression* parser::read_var(){

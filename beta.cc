@@ -3,10 +3,11 @@
 
 expression* beta_reduction::operator()(expression *exp){
   auto tmp = exp;
+  int cnt = 0;
   do{
     stop = true;
+    std::cout << cnt++ << ": " << tmp->to_string() << std::endl;
     tmp = step(tmp);
-    std::cout << ">>" << tmp->to_string() << std::endl;
   }while(!stop);
   return tmp;
 }
