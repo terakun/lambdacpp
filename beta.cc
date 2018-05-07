@@ -3,6 +3,7 @@
 
 exp_ptr beta_reduction::operator()(exp_ptr exp){
   auto tmp = exp;
+  gencount = 0;
   int cnt = 0;
   do{
     stop = true;
@@ -28,6 +29,7 @@ exp_ptr beta_reduction::step(exp_ptr exp){
         auto app = std::dynamic_pointer_cast<application>(exp);
         if(app->M1->type==expression::ABST){
           auto abst = std::dynamic_pointer_cast<abstraction>(app->M1);
+          stop = false;
           return substitute(abst->M,abst->symbol,app->M2);
         }else{
           return std::make_shared<application>(step(app->M1),step(app->M2));
@@ -47,7 +49,6 @@ exp_ptr beta_reduction::substitute(exp_ptr exp,const std::string &symbol,exp_ptr
       {
         auto var = std::dynamic_pointer_cast<variable>(exp);
         if(var -> symbol == symbol){
-          stop = false;
           return exp2;
         }else{
           return var;
@@ -113,7 +114,6 @@ bool beta_reduction::free_occurance(exp_ptr exp,const std::string &symbol){
 }
 
 std::string beta_reduction::gensymbol(){
-  static int count = 0;
-  return "d" + std::to_string(count++);
+  return "d" + std::to_string(gencount++);
 }
 

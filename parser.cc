@@ -1,9 +1,9 @@
 #include <cassert>
 #include "./parser.h"
 
-exp_ptr parser::operator()(const std::string &str){
+exp_ptr parser::operator()(const std::string &s){
   cur = 0;
-  exp_str = str;
+  str = s;
   exp = read_expression();
   return exp;
 }
@@ -11,8 +11,8 @@ exp_ptr parser::operator()(const std::string &str){
 exp_ptr parser::read_expression(){
   exp_ptr e;
   exp_ptr tmp;
-  while(cur < exp_str.length()&&exp_str[cur]!=')'){
-    char c = exp_str[cur];
+  while(cur < str.length()&&str[cur]!=')'){
+    char c = str[cur];
     switch(c){
       case '\\':
         cur++;
@@ -24,7 +24,7 @@ exp_ptr parser::read_expression(){
       case '(':
         cur++;
         tmp = read_expression();
-        assert(exp_str[cur] == ')');
+        assert(str[cur] == ')');
         cur++;
         break;
       default:
@@ -51,20 +51,21 @@ exp_ptr parser::read_expression(){
 
 exp_ptr parser::read_var(){
   std::string symbol;
-  while(cur<exp_str.size()&&isalpha(exp_str[cur])){
-    symbol += exp_str[cur++];
+  while(cur<str.size()&&isalpha(str[cur])){
+    symbol += str[cur++];
   }
   return std::make_shared<variable>(symbol);
 }
 
 exp_ptr parser::read_abst(){
   std::string symbol;
-  while(cur<exp_str.size()&&isalpha(exp_str[cur])){
-    symbol += exp_str[cur++];
+  while(cur<str.size()&&isalpha(str[cur])){
+    symbol += str[cur++];
   }
-  assert(exp_str[cur]=='-');
+  assert(str[cur]=='-');
   cur++;
-  assert(exp_str[cur]=='>');
+  assert(str[cur]=='>');
   cur++;
   return std::make_shared<abstraction>(symbol,read_expression());
 }
+

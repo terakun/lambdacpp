@@ -1,6 +1,5 @@
 CXX = g++
-FLAGS = -std=c++11 -O0 -g
-# FLAGS = -std=c++11 -O2
+FLAGS = -std=c++11 -O2
 INCLUDE = 
 LIBS = 
 

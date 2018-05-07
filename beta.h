@@ -4,6 +4,7 @@
 
 class beta_reduction{
   bool stop;
+  int gencount;
   public:
   beta_reduction(){}
   exp_ptr operator()(exp_ptr);

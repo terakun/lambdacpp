@@ -5,7 +5,7 @@
 class parser{
   exp_ptr exp;
   int cur;
-  std::string exp_str;
+  std::string str;
 
   exp_ptr read_expression();
   exp_ptr read_var();
